@@ -1,29 +1,41 @@
 package com.example.android.popularmovies;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviePosterAdapter.PosterClickListener {
+
+    private static final String TAG = MainActivity.class.getName();
 
     @BindView(R.id.movies_rv)
-    private RecyclerView mPosterGrid;
+    public RecyclerView mPosterGrid;
+
+    private MoviePosterAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mPosterGrid.setLayoutManager(gridLayoutManager);
 
+        mAdapter = new MoviePosterAdapter(10, this);
+        mPosterGrid.setAdapter(mAdapter);
+
+    }
+
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+        Toast.makeText(this, "Movie Poster Clicked!", Toast.LENGTH_SHORT).show();
 
     }
 }
