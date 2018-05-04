@@ -9,19 +9,19 @@ public class Result {
 
     @SerializedName("vote_count")
     @Expose
-    private int voteCount;
+    private Integer voteCount;
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private Integer id;
 
     @SerializedName("video")
     @Expose
-    private boolean video;
+    private Boolean video;
 
     @SerializedName("vote_average")
     @Expose
-    private double voteAverage;
+    private Double voteAverage;
 
     @SerializedName("title")
     @Expose
@@ -29,7 +29,7 @@ public class Result {
 
     @SerializedName("popularity")
     @Expose
-    private double popularity;
+    private Double popularity;
 
     @SerializedName("poster_path")
     @Expose
@@ -45,7 +45,7 @@ public class Result {
 
     @SerializedName("genre_ids")
     @Expose
-    private List<Integer> genreIdArray;
+    private List<Integer> genreIds = null;
 
     @SerializedName("backdrop_path")
     @Expose
@@ -53,7 +53,7 @@ public class Result {
 
     @SerializedName("adult")
     @Expose
-    private boolean adult;
+    private Boolean adult;
 
     @SerializedName("overview")
     @Expose
@@ -63,118 +63,117 @@ public class Result {
     @Expose
     private String releaseDate;
 
-    public int getVoteCount() {
+    public Integer getVoteCount() {
         return voteCount;
     }
 
-    public int getId() {
+    public void setVoteCount(Integer voteCount) {
+        this.voteCount = voteCount;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public boolean isVideo() {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Boolean getVideo() {
         return video;
     }
 
-    public double getVoteAverage() {
+    public void setVideo(Boolean video) {
+        this.video = video;
+    }
+
+    public Double getVoteAverage() {
         return voteAverage;
+    }
+
+    public void setVoteAverage(Double voteAverage) {
+        this.voteAverage = voteAverage;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public double getPopularity() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Double getPopularity() {
         return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
     }
 
     public String getPosterPath() {
         return posterPath;
     }
 
-    public String getOriginalLanguage() {
-        return originalLanguage;
-    }
-
-    public String getOriginalTitle() {
-        return originalTitle;
-    }
-
-    public List<Integer> getGenreIdArray() {
-        return genreIdArray;
-    }
-
-    public String getBackdropPath() {
-        return backdropPath;
-    }
-
-    public boolean isAdult() {
-        return adult;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
-
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
-    }
-
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
     }
 
     public void setOriginalLanguage(String originalLanguage) {
         this.originalLanguage = originalLanguage;
     }
 
+    public String getOriginalTitle() {
+        return originalTitle;
+    }
+
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
 
-    public void setGenreIdArray(List<Integer> genreIdArray) {
-        this.genreIdArray = genreIdArray;
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
     }
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
     }
 
-    public void setAdult(boolean adult) {
+    public Boolean getAdult() {
+        return adult;
+    }
+
+    public void setAdult(Boolean adult) {
         this.adult = adult;
+    }
+
+    public String getOverview() {
+        return overview;
     }
 
     public void setOverview(String overview) {
         this.overview = overview;
     }
 
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
-
 
 }
 
