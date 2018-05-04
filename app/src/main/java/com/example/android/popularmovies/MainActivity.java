@@ -4,10 +4,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Toast;
+import android.util.Log;
+
+import com.example.android.popularmovies.model.MovieInfo;
+import com.example.android.popularmovies.rest.MovieDbEndpoint;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.android.popularmovies.rest.MovieDbEndpoint.BASE_URL;
 
 public class MainActivity extends AppCompatActivity implements MoviePosterAdapter.PosterClickListener {
 
@@ -30,12 +40,39 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         mAdapter = new MoviePosterAdapter(10, this);
         mPosterGrid.setAdapter(mAdapter);
 
+        Retrofit retrofit =
+                new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+
+        MovieDbEndpoint client = retrofit.create(MovieDbEndpoint.class);
+
+        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
+
+        Call<MovieInfo> call = client.popularMovies(apiKey);
+        call.enqueue(new Callback<MovieInfo>() {
+            @Override
+            public void onResponse(Call<MovieInfo> call, Response<MovieInfo> response) {
+
+                MovieInfo body = response.body();
+
+                Log.d(TAG , body.getResults().get(0).getOriginalTitle() + "");
+
+            }
+
+            @Override
+            public void onFailure(Call<MovieInfo> call, Throwable t) {
+
+                Log.d(TAG, "failure");
+            }
+
+        });
     }
 
     @Override
     public void onListItemClick(int clickedItemIndex) {
-
-        Toast.makeText(this, "Movie Poster Clicked!", Toast.LENGTH_SHORT).show();
 
     }
 }
