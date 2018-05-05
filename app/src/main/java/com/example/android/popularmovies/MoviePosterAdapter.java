@@ -8,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.model.Result;
+
+import java.util.List;
+
 public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.PosterViewHolder> {
 
     private static final String TAG = MoviePosterAdapter.class.getName();
@@ -16,12 +20,15 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     private int mNumberItems;
 
+    private List<Result> results;
+
     public interface PosterClickListener {
         void onListItemClick(int clickedItemIndex);
     }
 
-    public MoviePosterAdapter(int numberOfItems, PosterClickListener listener) {
-        mNumberItems = numberOfItems;
+    public MoviePosterAdapter(List<Result> results, PosterClickListener listener) {
+        results = results;
+        mNumberItems = results.size();
         mOnClickListener = listener;
     }
 
@@ -43,6 +50,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MoviePosterAdapter.PosterViewHolder holder, int position) {
+
+
+
+
 
     }
 

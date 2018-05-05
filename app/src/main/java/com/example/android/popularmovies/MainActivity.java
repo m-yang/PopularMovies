@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.example.android.popularmovies.model.MovieInfo;
+import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,9 +40,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mPosterGrid.setLayoutManager(gridLayoutManager);
 
-        mAdapter = new MoviePosterAdapter(10, this);
-        mPosterGrid.setAdapter(mAdapter);
-
         Retrofit retrofit =
                 new Retrofit.Builder()
                         .baseUrl(BASE_URL)
@@ -56,9 +56,12 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
             @Override
             public void onResponse(Call<MovieInfo> call, Response<MovieInfo> response) {
 
-                MovieInfo body = response.body();
+                MovieInfo movieModel = response.body();
 
-                Log.d(TAG , body.getResults().get(0).getOriginalTitle() + "");
+                List<Result> results = movieModel.getResults();
+
+                mAdapter = new MoviePosterAdapter(results, MainActivity.this);
+                mPosterGrid.setAdapter(mAdapter);
 
             }
 
