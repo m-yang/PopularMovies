@@ -58,12 +58,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         titleTextView.setText(movieResult.getTitle());
 
-        releaseDateTextView.setText(movieResult.getReleaseDate());
+        releaseDateTextView.setText(getResources().getString(R.string.detail_released) +  ": " + movieResult.getReleaseDate());
 
-        ratingTextView.setText(movieResult.getVoteAverage() + "");
+        ratingTextView.setText(getResources().getString(R.string.detail_rating) +  ": " + movieResult.getVoteAverage());
 
         synopsisTextView.setText(movieResult.getOverview());
-        
 
     }
 }
