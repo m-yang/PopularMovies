@@ -32,7 +32,9 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         void onListItemClick(int clickedItemIndex);
     }
 
-    public MoviePosterAdapter(List<Result> results, PosterClickListener listener, Context context) {
+    public MoviePosterAdapter(List<Result> results, Context context) {
+        PosterClickListener listener = (PosterClickListener) context;
+
         this.results = results;
         this.context = context;
         this.mNumberItems = results.size();
@@ -67,7 +69,6 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         Picasso.with(context)
                 .load(imageURL)
                 .into(holder.posterImageView);
-
     }
 
     @Override

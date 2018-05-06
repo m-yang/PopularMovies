@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
                 List<Result> results = movieModel.getResults();
 
-                mAdapter = new MoviePosterAdapter(results, MainActivity.this, MainActivity.this);
+                mAdapter = new MoviePosterAdapter(results,MainActivity.this);
                 mPosterGrid.setAdapter(mAdapter);
 
             }
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
-
+        Log.d(TAG, "index " + clickedItemIndex);
 
     }
 }
