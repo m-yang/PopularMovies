@@ -6,6 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.android.popularmovies.model.MovieInfo;
 import com.example.android.popularmovies.model.Result;
@@ -75,6 +81,37 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.sort_movie_spinner, menu);
+
+        MenuItem item = menu.findItem(R.id.spinner);
+        final Spinner spinner = (Spinner) item.getActionView();
+
+        ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+                R.array.spinner_options_array, R.layout.spinner_item);
+
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner.setAdapter(spinnerAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        return true;
+    }
+
 
     @Override
     public void onListItemClick(Result movieResult) {

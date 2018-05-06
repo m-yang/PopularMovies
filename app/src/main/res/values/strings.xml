@@ -2,4 +2,10 @@
     <string name="app_name">PopularMovies</string>
     <string name="detail_released">Released</string>
     <string name="detail_rating">Rating</string>
+    <string name="spinner_sort_by">Sort By</string>
+    
+    <string-array name="spinner_options_array">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
 </resources>
