@@ -21,6 +21,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.android.popularmovies.MovieDetailActivity.MOVIE_RESULT_PARCELABLE_KEY;
 import static com.example.android.popularmovies.rest.MovieDbEndpoint.BASE_URL;
 
 public class MainActivity extends AppCompatActivity implements MoviePosterAdapter.PosterClickListener {
@@ -76,19 +77,15 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     }
 
     @Override
-    public void onListItemClick(int clickedItemIndex) {
+    public void onListItemClick(Result movieResult) {
 
-        launchMovieDetailActivity(clickedItemIndex);
-
-        Log.d(TAG, "index " + clickedItemIndex);
-
-    }
-
-    private void launchMovieDetailActivity(int index) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(MOVIE_RESULT_PARCELABLE_KEY, movieResult);
 
         Intent intent = new Intent(this, MovieDetailActivity.class);
-        intent.putExtra(MovieDetailActivity.INDEX, index);
-        startActivity(intent);
-    }
+        intent.putExtras(bundle);
 
+        startActivity(intent);
+
+    }
 }

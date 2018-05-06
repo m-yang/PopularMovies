@@ -29,7 +29,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     private Context context;
 
     public interface PosterClickListener {
-        void onListItemClick(int clickedItemIndex);
+        void onListItemClick(Result movieResult);
     }
 
     public MoviePosterAdapter(List<Result> results, Context context) {
@@ -92,8 +92,10 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
         @Override
         public void onClick(View view) {
             int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
+
+            Result movieResult = results.get(clickedPosition);
+
+            mOnClickListener.onListItemClick(movieResult);
         }
     }
-
 }
