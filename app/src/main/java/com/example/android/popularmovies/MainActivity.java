@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
                 List<Result> results = movieModel.getResults();
 
-                mAdapter = new MoviePosterAdapter(results,MainActivity.this);
+                mAdapter = new MoviePosterAdapter(results, MainActivity.this);
                 mPosterGrid.setAdapter(mAdapter);
 
             }
@@ -77,7 +78,17 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     @Override
     public void onListItemClick(int clickedItemIndex) {
 
+        launchMovieDetailActivity(clickedItemIndex);
+
         Log.d(TAG, "index " + clickedItemIndex);
 
     }
+
+    private void launchMovieDetailActivity(int index) {
+
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra(MovieDetailActivity.INDEX, index);
+        startActivity(intent);
+    }
+
 }
