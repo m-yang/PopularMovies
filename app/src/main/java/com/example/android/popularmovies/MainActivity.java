@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
     private static final String TAG = MainActivity.class.getName();
 
+    private static final int SORT_POPULAR = 0;
+    private static final int SORT_TOP_RATED = 1;
+
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
 
@@ -48,18 +51,30 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
         mPosterGrid.setLayoutManager(gridLayoutManager);
 
+        displayMovies(SORT_POPULAR);
+    }
+
+    private void displayMovies(long rowId) {
+
         Retrofit retrofit =
                 new Retrofit.Builder()
                         .baseUrl(BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
-
         MovieDbEndpoint client = retrofit.create(MovieDbEndpoint.class);
 
         String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
 
-        Call<MovieInfo> call = client.popularMovies(apiKey);
+
+        Call<MovieInfo> call = null;
+
+        if (rowId == SORT_POPULAR) {
+            call = client.popularMovies(apiKey);
+        } else if (rowId == SORT_TOP_RATED) {
+            call = client.topRatedMovies(apiKey);
+        }
+
         call.enqueue(new Callback<MovieInfo>() {
             @Override
             public void onResponse(Call<MovieInfo> call, Response<MovieInfo> response) {
@@ -70,17 +85,15 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
                 mAdapter = new MoviePosterAdapter(results, MainActivity.this);
                 mPosterGrid.setAdapter(mAdapter);
-
             }
 
             @Override
             public void onFailure(Call<MovieInfo> call, Throwable t) {
-
                 Log.d(TAG, "failure");
             }
-
         });
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -98,9 +111,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         spinner.setAdapter(spinnerAdapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long rowId) {
+                displayMovies(rowId);
             }
 
             @Override
@@ -111,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
         return true;
     }
-
 
     @Override
     public void onListItemClick(Result movieResult) {

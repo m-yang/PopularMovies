@@ -14,4 +14,7 @@ public interface MovieDbEndpoint {
     @GET("/3/movie/popular")
     Call<MovieInfo> popularMovies(@Query("api_key") String api_key);
 
+    @GET("/3/movie/top_rated")
+    Call<MovieInfo> topRatedMovies(@Query("api_key") String api_key);
+
 }
