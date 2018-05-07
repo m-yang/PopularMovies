@@ -3,7 +3,6 @@ package com.example.android.popularmovies;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,9 +47,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
         }
-
-        Log.d(TAG, movieResult.getOverview());
-
+        
         String imageURL = IMAGE_BASE_URL + "w185" + movieResult.getPosterPath();
         Picasso.with(this)
                 .load(imageURL)
@@ -58,9 +55,12 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         titleTextView.setText(movieResult.getTitle());
 
-        releaseDateTextView.setText(getResources().getString(R.string.detail_released) +  ": " + movieResult.getReleaseDate());
+        String releaseDate = getResources().getString(R.string.detail_released) +  ": " + movieResult.getReleaseDate();
+        releaseDateTextView.setText(releaseDate);
 
-        ratingTextView.setText(getResources().getString(R.string.detail_rating) +  ": " + movieResult.getVoteAverage());
+        String rating = getResources().getString(R.string.detail_rating) +  ": " + movieResult.getVoteAverage();
+
+        ratingTextView.setText(rating);
 
         synopsisTextView.setText(movieResult.getOverview());
 

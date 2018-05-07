@@ -3,7 +3,6 @@ package com.example.android.popularmovies;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,11 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
 
     final private PosterClickListener mOnClickListener;
 
-    private int mNumberItems;
+    private final int mNumberItems;
 
-    private List<Result> results;
+    private final List<Result> results;
 
-    private Context context;
+    private final Context context;
 
     public interface PosterClickListener {
         void onListItemClick(Result movieResult);
@@ -51,9 +50,7 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
                 .from(context)
                 .inflate(R.layout.poster_grid_item, parent, false);
 
-        PosterViewHolder viewHolder = new PosterViewHolder(view);
-
-        return viewHolder;
+        return new PosterViewHolder(view);
 
     }
 
@@ -61,10 +58,6 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     public void onBindViewHolder(@NonNull MoviePosterAdapter.PosterViewHolder holder, int position) {
 
         String imageURL = IMAGE_BASE_URL + "w185" + results.get(position).getPosterPath();
-
-        Log.d(TAG, imageURL);
-
-        Picasso.with(context).setLoggingEnabled(true);
 
         Picasso.with(context)
                 .load(imageURL)
@@ -79,13 +72,13 @@ public class MoviePosterAdapter extends RecyclerView.Adapter<MoviePosterAdapter.
     class PosterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
 
-        ImageView posterImageView;
+        final ImageView posterImageView;
 
-        public PosterViewHolder(View itemView) {
+        PosterViewHolder(View itemView) {
 
             super(itemView);
 
-            posterImageView = (ImageView) itemView.findViewById(R.id.poster_iv);
+            posterImageView = itemView.findViewById(R.id.poster_iv);
             posterImageView.setOnClickListener(this);
         }
 

@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
 
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
 
-    private MoviePosterAdapter mAdapter;
+    public MoviePosterAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,20 +77,20 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
             call = client.topRatedMovies(apiKey);
         }
 
-        call.enqueue(new Callback<MovieInfo>() {
+        Objects.requireNonNull(call).enqueue(new Callback<MovieInfo>() {
             @Override
-            public void onResponse(Call<MovieInfo> call, Response<MovieInfo> response) {
+            public void onResponse(@NonNull Call<MovieInfo> call, @NonNull Response<MovieInfo> response) {
 
                 MovieInfo movieModel = response.body();
 
-                List<Result> results = movieModel.getResults();
+                List<Result> results = Objects.requireNonNull(movieModel).getResults();
 
                 mAdapter = new MoviePosterAdapter(results, MainActivity.this);
                 mPosterGrid.setAdapter(mAdapter);
             }
 
             @Override
-            public void onFailure(Call<MovieInfo> call, Throwable t) {
+            public void onFailure(@NonNull Call<MovieInfo> call, @NonNull Throwable t) {
                 Log.d(TAG, "failure");
             }
         });
