@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
         MovieDbEndpoint client = retrofit.create(MovieDbEndpoint.class);
 
-        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
-
-
         Call<MovieInfo> call = null;
+        
+        // TODO: Insert API key here
+        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
 
         if (rowId == SORT_POPULAR) {
             call = client.popularMovies(apiKey);
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
