@@ -81,9 +81,9 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
 
         if (rowId == SORT_POPULAR) {
-            call = client.popularMovies(apiKey);
+            call = client.getMovies(getResources().getString(R.string.sort_popular),apiKey);
         } else if (rowId == SORT_TOP_RATED) {
-            call = client.topRatedMovies(apiKey);
+            call = client.getMovies(getResources().getString(R.string.sort_top_rated), apiKey);
         }
 
         Objects.requireNonNull(call).enqueue(new Callback<MovieInfo>() {

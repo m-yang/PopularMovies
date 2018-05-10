@@ -3,6 +3,8 @@
     <string name="detail_released">Released</string>
     <string name="detail_rating">Rating</string>
     <string name="spinner_sort_by">Sort By</string>
+    <string name="sort_popular">popular</string>
+    <string name="sort_top_rated">top_rated</string>
     <string name="movie_poster_content_description">Movie Poster Image</string>
 
     <string-array name="spinner_options_array">
