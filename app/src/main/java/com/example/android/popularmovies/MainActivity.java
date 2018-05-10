@@ -28,7 +28,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.android.popularmovies.MovieDetailActivity.MOVIE_RESULT_PARCELABLE_KEY;
 import static com.example.android.popularmovies.rest.MovieDbEndpoint.BASE_URL;
@@ -71,14 +70,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
 
     private void displayMovies(long rowId) {
+        
+        Retrofit mRetrofit = RetrofitClient.getInstance(BASE_URL);
 
-        Retrofit retrofit =
-                new Retrofit.Builder()
-                        .baseUrl(BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-        MovieDbEndpoint client = retrofit.create(MovieDbEndpoint.class);
+        MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
 
         Call<MovieInfo> call = null;
 
