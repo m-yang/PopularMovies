@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,11 +51,24 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
         mPosterGrid.setLayoutManager(gridLayoutManager);
 
         displayMovies(SORT_POPULAR);
     }
+
+    private int numColumns() {
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+
+        int widthDivider = 500;
+        int width = displayMetrics.widthPixels;
+        int columns = width / widthDivider;
+
+        return (columns < 2) ? 2 : columns;
+    }
+
 
     private void displayMovies(long rowId) {
 
@@ -67,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         MovieDbEndpoint client = retrofit.create(MovieDbEndpoint.class);
 
         Call<MovieInfo> call = null;
-        
+
         // TODO: Insert API key here
         String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
 
