@@ -1,6 +1,7 @@
 package com.example.android.popularmovies.rest;
 
 import com.example.android.popularmovies.model.MovieInfo;
+import com.example.android.popularmovies.model.ReviewInfo;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,5 +15,8 @@ public interface MovieDbEndpoint {
 
     @GET("/3/movie/{sort}")
     Call<MovieInfo> getMovies(@Path("sort") String sort, @Query("api_key") String api_key);
+
+    @GET("/3/movie/{id}/reviews")
+    Call<ReviewInfo> getReviews(@Path("id") int id, @Query("api_key") String api_key);
 
 }
