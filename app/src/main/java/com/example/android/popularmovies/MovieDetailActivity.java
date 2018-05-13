@@ -47,6 +47,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.synopsis_tv)
     public TextView synopsisTextView;
 
+    Retrofit mRetrofit;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,37 +62,13 @@ public class MovieDetailActivity extends AppCompatActivity {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
         }
 
+        mRetrofit = RetrofitClient.getInstance(BASE_URL);
+
         int id = movieResult.getId();
 
         Log.d(TAG, "id: " + id);
 
-
-        Retrofit mRetrofit = RetrofitClient.getInstance(BASE_URL);
-
-        MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
-
-        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
-
-        Call<ReviewInfo> call = client.getReviews(id, apiKey);
-
-        call.enqueue(new Callback<ReviewInfo>() {
-            @Override
-            public void onResponse(@NonNull Call<ReviewInfo> call, @NonNull Response<ReviewInfo> response) {
-
-                Log.d(TAG, "response code: " + response.code());
-
-                ReviewInfo reviewModel = response.body();
-
-                List<ReviewResult> results = reviewModel.getResults();
-
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ReviewInfo> call, @NonNull Throwable t) {
-                Log.d(TAG, "failure");
-            }
-        });
-
+        getReviews(id);
 
         String imageURL = IMAGE_BASE_URL + "w185" + movieResult.getPosterPath();
         Picasso.with(this)
@@ -108,5 +86,30 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         synopsisTextView.setText(movieResult.getOverview());
 
+    }
+
+    private void getReviews(int id) {
+
+        MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
+
+        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
+
+        Call<ReviewInfo> call = client.getReviews(id, apiKey);
+
+        call.enqueue(new Callback<ReviewInfo>() {
+            @Override
+            public void onResponse(@NonNull Call<ReviewInfo> call, @NonNull Response<ReviewInfo> response) {
+
+                ReviewInfo reviewModel = response.body();
+
+                List<ReviewResult> results = reviewModel.getResults();
+                
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ReviewInfo> call, @NonNull Throwable t) {
+                Log.d(TAG, "failure");
+            }
+        });
     }
 }
