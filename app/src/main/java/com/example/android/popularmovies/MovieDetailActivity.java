@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.model.ReviewInfo;
 import com.example.android.popularmovies.model.ReviewResult;
+import com.example.android.popularmovies.model.TrailerInfo;
+import com.example.android.popularmovies.model.TrailerResult;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
 import com.squareup.picasso.Picasso;
 
@@ -69,6 +71,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Log.d(TAG, "id: " + id);
 
         getReviews(id);
+        getTrailer(id);
 
         String imageURL = IMAGE_BASE_URL + "w185" + movieResult.getPosterPath();
         Picasso.with(this)
@@ -103,11 +106,36 @@ public class MovieDetailActivity extends AppCompatActivity {
                 ReviewInfo reviewModel = response.body();
 
                 List<ReviewResult> results = reviewModel.getResults();
-                
+
             }
 
             @Override
             public void onFailure(@NonNull Call<ReviewInfo> call, @NonNull Throwable t) {
+                Log.d(TAG, "failure");
+            }
+        });
+    }
+
+    private void getTrailer(int id) {
+
+        MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
+
+        String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
+
+        Call<TrailerInfo> call = client.getTrailer(id, apiKey);
+
+        call.enqueue(new Callback<TrailerInfo>() {
+            @Override
+            public void onResponse(@NonNull Call<TrailerInfo> call, @NonNull Response<TrailerInfo> response) {
+
+                TrailerInfo reviewModel = response.body();
+
+                List<TrailerResult> results = reviewModel.getResults();
+                
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TrailerInfo> call, @NonNull Throwable t) {
                 Log.d(TAG, "failure");
             }
         });
