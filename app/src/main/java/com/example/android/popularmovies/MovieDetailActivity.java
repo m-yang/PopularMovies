@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -49,6 +50,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.synopsis_tv)
     public TextView synopsisTextView;
 
+    @BindView(R.id.review_elv)
+    public ExpandableListView expandableListView;
+
     Retrofit mRetrofit;
 
     @Override
@@ -68,10 +72,15 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         int id = movieResult.getId();
 
-        Log.d(TAG, "id: " + id);
-
+        populateMovieInfo(movieResult);
         getReviews(id);
         getTrailer(id);
+
+
+
+    }
+
+    private void populateMovieInfo(Result movieResult) {
 
         String imageURL = IMAGE_BASE_URL + "w185" + movieResult.getPosterPath();
         Picasso.with(this)
@@ -131,7 +140,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 TrailerInfo reviewModel = response.body();
 
                 List<TrailerResult> results = reviewModel.getResults();
-                
+
             }
 
             @Override
