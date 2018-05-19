@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,10 +49,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.synopsis_tv)
     public TextView synopsisTextView;
 
-    @BindView(R.id.review_elv)
-    public ExpandableListView expandableListView;
-
     Retrofit mRetrofit;
+
+    List<ReviewResult> reviewResults;
+    List<TrailerResult> trailerResults;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,8 +74,6 @@ public class MovieDetailActivity extends AppCompatActivity {
         populateMovieInfo(movieResult);
         getReviews(id);
         getTrailer(id);
-
-
 
     }
 
@@ -113,8 +110,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<ReviewInfo> call, @NonNull Response<ReviewInfo> response) {
 
                 ReviewInfo reviewModel = response.body();
-
-                List<ReviewResult> results = reviewModel.getResults();
+                reviewResults = reviewModel.getResults();
 
             }
 
@@ -138,9 +134,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             public void onResponse(@NonNull Call<TrailerInfo> call, @NonNull Response<TrailerInfo> response) {
 
                 TrailerInfo reviewModel = response.body();
-
-                List<TrailerResult> results = reviewModel.getResults();
-
+                trailerResults = reviewModel.getResults();
             }
 
             @Override
