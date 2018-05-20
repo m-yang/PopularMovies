@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,6 +16,7 @@ import com.example.android.popularmovies.model.ReviewResult;
 import com.example.android.popularmovies.model.TrailerInfo;
 import com.example.android.popularmovies.model.TrailerResult;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
+import com.example.android.popularmovies.rest.MovieReviewAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -49,10 +52,15 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.synopsis_tv)
     public TextView synopsisTextView;
 
+    @BindView(R.id.movie_review_rv)
+    public RecyclerView mMovieReviews;
+
     Retrofit mRetrofit;
 
     List<ReviewResult> reviewResults;
     List<TrailerResult> trailerResults;
+
+    public MovieReviewAdapter mAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -111,6 +119,11 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 ReviewInfo reviewModel = response.body();
                 reviewResults = reviewModel.getResults();
+
+                mAdapter = new MovieReviewAdapter(reviewResults);
+
+                mMovieReviews.setAdapter(mAdapter);
+                mMovieReviews.setLayoutManager(new LinearLayoutManager(MovieDetailActivity.this));
 
             }
 
