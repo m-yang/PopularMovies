@@ -15,18 +15,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/detail_poster_iv"
-                android:layout_width="185dp"
-                android:layout_height="278dp"
+            <RelativeLayout
+                android:id="@+id/poster_rl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="16dp"
-                android:contentDescription="@string/movie_poster_content_description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/detail_poster_iv"
+                    android:layout_width="185dp"
+                    android:layout_height="278dp"
+                    android:contentDescription="@string/movie_poster_content_description" />
+
+                <ImageView
+                    android:id="@+id/play_trailer_iv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/play_circle_96dp" />
+
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/synopsis_tv"
@@ -75,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="16dp"
                 android:gravity="center"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
@@ -83,23 +98,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_poster_iv" />
+                app:layout_constraintTop_toBottomOf="@+id/poster_rl" />
 
-            <TextView
-                android:id="@+id/trailer_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_poster_iv" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.v7.widget.RecyclerView

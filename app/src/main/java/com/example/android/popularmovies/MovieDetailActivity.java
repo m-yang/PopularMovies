@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -54,6 +57,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     @BindView(R.id.movie_review_rv)
     public RecyclerView mMovieReviews;
+
+    @BindView(R.id.play_trailer_iv)
+    ImageView playTrailerImageView;
 
     Retrofit mRetrofit;
 
@@ -148,6 +154,15 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 TrailerInfo reviewModel = response.body();
                 trailerResults = reviewModel.getResults();
+
+                final String id = trailerResults.get(0).getKey();
+
+                playTrailerImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        launchTrailer(id);
+                    }
+                });
             }
 
             @Override
@@ -155,5 +170,16 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.d(TAG, "failure");
             }
         });
+    }
+
+    private void launchTrailer(String trailerID) {
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailerID));
+
+        try {
+            MovieDetailActivity.this.startActivity(intent);
+        } catch (Exception e) {
+            Log.d(TAG, "Couldn't start activity");
+        }
     }
 }
