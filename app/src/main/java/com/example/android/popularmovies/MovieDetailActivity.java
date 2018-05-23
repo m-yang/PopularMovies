@@ -76,6 +76,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Result movieResult = null;
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
