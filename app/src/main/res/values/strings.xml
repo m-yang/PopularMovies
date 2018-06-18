@@ -10,5 +10,6 @@
     <string-array name="spinner_options_array">
         <item>Most Popular</item>
         <item>Highest Rated</item>
+        <item>Favorites</item>
     </string-array>
 </resources>

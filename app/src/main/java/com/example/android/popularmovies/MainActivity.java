@@ -1,6 +1,8 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -15,10 +17,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.android.popularmovies.data.FavoriteMovieContract;
+import com.example.android.popularmovies.data.FavoriteMovieDbHelper;
 import com.example.android.popularmovies.model.MovieInfo;
 import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
+import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
     private static final int SORT_POPULAR = 0;
     private static final int SORT_TOP_RATED = 1;
+    private static final int SORT_FAVORITES = 2;
+
+    private SQLiteDatabase mDb;
+
 
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
@@ -49,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        FavoriteMovieDbHelper dbHelper = new FavoriteMovieDbHelper(this);
+
+        mDb = dbHelper.getWritableDatabase();
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
         mPosterGrid.setLayoutManager(gridLayoutManager);
@@ -84,6 +98,23 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
             call = client.getMovies(getResources().getString(R.string.sort_popular),apiKey);
         } else if (rowId == SORT_TOP_RATED) {
             call = client.getMovies(getResources().getString(R.string.sort_top_rated), apiKey);
+        } else if (rowId == SORT_FAVORITES) {
+
+            Cursor cursor = queryDb();
+
+            List<Result> results = new ArrayList<Result>();
+
+            while (cursor.moveToNext()) {
+                String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
+
+                Result result = new Gson().fromJson(json, Result.class);
+
+                results.add(result);
+            }
+
+            mAdapter = new MoviePosterAdapter(results, MainActivity.this);
+            mPosterGrid.setAdapter(mAdapter);
+            return;
         }
 
         Objects.requireNonNull(call).enqueue(new Callback<MovieInfo>() {
@@ -146,6 +177,18 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         intent.putExtras(bundle);
 
         startActivity(intent);
+
+    }
+
+    private Cursor queryDb() {
+        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null, null);
+
+        return cursor;
 
     }
 }
