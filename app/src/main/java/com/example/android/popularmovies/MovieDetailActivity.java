@@ -98,17 +98,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        setupFavoriteButton();
-
-
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
         }
+
 
         mRetrofit = RetrofitClient.getInstance(BASE_URL);
 
         int id = movieResult.getId();
 
+        setupFavoriteButton();
         populateMovieInfo();
         getReviews(id);
         getTrailer(id);
@@ -116,40 +115,52 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private void setupFavoriteButton() {
+
+        if (isFavorite(movieResult.getId())) {
+            star();
+        }
+
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!starred) {
-                    favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    star();
                     addMovieToDb();
-                    starred = true;
                 } else {
-                    favoriteButton.setImageResource(android.R.drawable.btn_star);
+                    unstar();
                     int numRemoved = removeMovieFromDb(movieResult.getId());
-
-                    Log.d(TAG,  "Removed: " + numRemoved);
-                    starred = false;
+                    Log.d(TAG, "Removed: " + numRemoved);
                 }
 
             }
         });
     }
 
+    private void star() {
+        favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+        starred = true;
+    }
+
+    private void unstar() {
+        favoriteButton.setImageResource(android.R.drawable.btn_star);
+        starred = false;
+    }
+
     private void addMovieToDb() {
-        //TODO
         String movieResultJson = new Gson().toJson(movieResult);
+
         ContentValues cv = new ContentValues();
+
         cv.put(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT, movieResultJson);
+
         long id = mDb.insert(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME, null, cv);
 
         Log.d(TAG, id + "");
 
         printDb();
-
     }
 
     private int removeMovieFromDb(int movieId) {
-        //TODO
         Cursor cursor = queryDb();
 
         int numRemoved = 0;
@@ -290,5 +301,23 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         return cursor;
 
+    }
+
+    private boolean isFavorite(int movieId) {
+
+        Cursor cursor = queryDb();
+
+        while (cursor.moveToNext()) {
+            String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
+            String _id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry._ID));
+
+            Result result = new Gson().fromJson(json, Result.class);
+
+            if (result.getId() == movieId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
