@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,6 +62,11 @@ public class MovieDetailActivity extends AppCompatActivity {
     @BindView(R.id.play_trailer_iv)
     ImageView playTrailerImageView;
 
+    @BindView(R.id.favorite_btn)
+    ImageButton favoriteButton;
+
+    boolean starred = false;
+
     Retrofit mRetrofit;
 
     List<ReviewResult> reviewResults;
@@ -78,6 +84,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        setupFavoriteButton();
+
         Result movieResult = null;
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
@@ -92,6 +100,34 @@ public class MovieDetailActivity extends AppCompatActivity {
         getTrailer(id);
 
     }
+
+    private void setupFavoriteButton() {
+        favoriteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!starred) {
+                    favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
+                    addMovieToDb();
+                    starred = true;
+                } else {
+                    favoriteButton.setImageResource(android.R.drawable.btn_star);
+                    removeMovieFromDb();
+                    starred = false;
+                }
+
+            }
+        });
+    }
+
+    private void addMovieToDb() {
+        //TODO
+    }
+
+    private void removeMovieFromDb() {
+        //TODO
+    }
+
+
 
     private void populateMovieInfo(Result movieResult) {
 
