@@ -119,13 +119,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         favoriteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!starred) {
+                if (!starred) {
                     favoriteButton.setImageResource(android.R.drawable.btn_star_big_on);
                     addMovieToDb();
                     starred = true;
                 } else {
                     favoriteButton.setImageResource(android.R.drawable.btn_star);
-                    removeMovieFromDb();
+                    int numRemoved = removeMovieFromDb(movieResult.getId());
+
+                    Log.d(TAG,  "Removed: " + numRemoved);
                     starred = false;
                 }
 
@@ -142,31 +144,32 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         Log.d(TAG, id + "");
 
-        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null, null);
+        printDb();
 
+    }
 
-        while(cursor.moveToNext()) {
+    private int removeMovieFromDb(int movieId) {
+        //TODO
+        Cursor cursor = queryDb();
 
+        int numRemoved = 0;
+
+        while (cursor.moveToNext()) {
             String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
             String _id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry._ID));
 
-            Result r = new Gson().fromJson(json, Result.class);
+            Result result = new Gson().fromJson(json, Result.class);
 
-            Log.d(TAG, r.getId() + " " + _id);
+            if (result.getId() == movieId) {
+                numRemoved += mDb.delete(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
+                        FavoriteMovieContract.FavoriteMovieEntry._ID + "=" + _id,
+                        null);
 
+            }
         }
+
+        return numRemoved;
     }
-
-    private void removeMovieFromDb() {
-        //TODO
-    }
-
-
 
     private void populateMovieInfo() {
 
@@ -258,5 +261,34 @@ public class MovieDetailActivity extends AppCompatActivity {
         } catch (Exception e) {
             Log.d(TAG, "Couldn't start activity");
         }
+    }
+
+    private void printDb() {
+
+        Cursor cursor = queryDb();
+
+        while (cursor.moveToNext()) {
+
+            String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
+            String _id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry._ID));
+
+            Result r = new Gson().fromJson(json, Result.class);
+
+            Log.d(TAG, r.getId() + " " + _id);
+
+        }
+
+    }
+
+    private Cursor queryDb() {
+        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null, null);
+
+        return cursor;
+
     }
 }
