@@ -1,6 +1,9 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmovies.data.FavoriteMovieContract;
+import com.example.android.popularmovies.data.FavoriteMovieDbHelper;
 import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.model.ReviewInfo;
 import com.example.android.popularmovies.model.ReviewResult;
@@ -21,6 +26,7 @@ import com.example.android.popularmovies.model.TrailerInfo;
 import com.example.android.popularmovies.model.TrailerResult;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
 import com.example.android.popularmovies.rest.MovieReviewAdapter;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -67,6 +73,8 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     boolean starred = false;
 
+    private SQLiteDatabase mDb;
+
     Retrofit mRetrofit;
 
     List<ReviewResult> reviewResults;
@@ -74,11 +82,17 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     public MovieReviewAdapter mAdapter;
 
+    Result movieResult = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
+
+        FavoriteMovieDbHelper dbHelper = new FavoriteMovieDbHelper(this);
+
+        mDb = dbHelper.getWritableDatabase();
 
         Bundle bundle = getIntent().getExtras();
 
@@ -86,7 +100,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         setupFavoriteButton();
 
-        Result movieResult = null;
+
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
         }
@@ -95,7 +109,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
         int id = movieResult.getId();
 
-        populateMovieInfo(movieResult);
+        populateMovieInfo();
         getReviews(id);
         getTrailer(id);
 
@@ -121,6 +135,31 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void addMovieToDb() {
         //TODO
+        String movieResultJson = new Gson().toJson(movieResult);
+        ContentValues cv = new ContentValues();
+        cv.put(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT, movieResultJson);
+        long id = mDb.insert(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME, null, cv);
+
+        Log.d(TAG, id + "");
+
+        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null, null);
+
+
+        while(cursor.moveToNext()) {
+
+            String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
+            String _id = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry._ID));
+
+            Result r = new Gson().fromJson(json, Result.class);
+
+            Log.d(TAG, r.getId() + " " + _id);
+
+        }
     }
 
     private void removeMovieFromDb() {
@@ -129,7 +168,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
 
-    private void populateMovieInfo(Result movieResult) {
+    private void populateMovieInfo() {
 
         String imageURL = IMAGE_BASE_URL + "w185" + movieResult.getPosterPath();
         Picasso.with(this)

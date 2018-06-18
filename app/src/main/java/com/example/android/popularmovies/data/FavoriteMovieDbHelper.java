@@ -17,9 +17,10 @@ public class FavoriteMovieDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TABLE_QUERY = "CREATE TABLE " + FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME +
-                " ( " + FavoriteMovieContract.FavoriteMovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                FavoriteMovieContract.FavoriteMovieEntry.COLUMN_MOVIE_NAME + " ); ";
+        final String CREATE_TABLE_QUERY = "CREATE TABLE " + FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME + " (" +
+                FavoriteMovieContract.FavoriteMovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT + " TEXT NOT NULL " +
+                "); ";
 
         sqLiteDatabase.execSQL(CREATE_TABLE_QUERY);
 
