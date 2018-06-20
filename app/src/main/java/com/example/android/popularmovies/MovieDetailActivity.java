@@ -26,9 +26,11 @@ import com.example.android.popularmovies.model.TrailerInfo;
 import com.example.android.popularmovies.model.TrailerResult;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
 import com.example.android.popularmovies.rest.MovieReviewAdapter;
+import com.example.android.popularmovies.rest.TrailerAdapter;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -41,7 +43,7 @@ import retrofit2.Retrofit;
 import static com.example.android.popularmovies.rest.MovieDbEndpoint.BASE_URL;
 import static com.example.android.popularmovies.rest.MovieDbEndpoint.IMAGE_BASE_URL;
 
-public class MovieDetailActivity extends AppCompatActivity {
+public class MovieDetailActivity extends AppCompatActivity implements TrailerAdapter.TrailerClickListener {
 
     private static final String TAG = MovieDetailActivity.class.getName();
 
@@ -63,10 +65,10 @@ public class MovieDetailActivity extends AppCompatActivity {
     public TextView synopsisTextView;
 
     @BindView(R.id.movie_review_rv)
-    public RecyclerView mMovieReviews;
+    public RecyclerView mMovieReviewsRv;
 
-    @BindView(R.id.play_trailer_iv)
-    ImageView playTrailerImageView;
+    @BindView(R.id.trailer_rv)
+    public RecyclerView mTrailerRv;
 
     @BindView(R.id.favorite_btn)
     ImageButton favoriteButton;
@@ -80,7 +82,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     List<ReviewResult> reviewResults;
     List<TrailerResult> trailerResults;
 
-    public MovieReviewAdapter mAdapter;
+    public MovieReviewAdapter mMovieReviewAdapter;
+    public TrailerAdapter mTrailerAdapter;
 
     Result movieResult = null;
 
@@ -110,7 +113,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setupFavoriteButton();
         populateMovieInfo();
         getReviews(id);
-        getTrailer(id);
+        getTrailers(id);
 
     }
 
@@ -217,10 +220,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 ReviewInfo reviewModel = response.body();
                 reviewResults = reviewModel.getResults();
 
-                mAdapter = new MovieReviewAdapter(reviewResults);
+                mMovieReviewAdapter = new MovieReviewAdapter(reviewResults);
 
-                mMovieReviews.setAdapter(mAdapter);
-                mMovieReviews.setLayoutManager(new LinearLayoutManager(MovieDetailActivity.this));
+                mMovieReviewsRv.setAdapter(mMovieReviewAdapter);
+                mMovieReviewsRv.setLayoutManager(new LinearLayoutManager(MovieDetailActivity.this));
 
             }
 
@@ -231,7 +234,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void getTrailer(int id) {
+    private void getTrailers(int id) {
 
         MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
 
@@ -246,14 +249,17 @@ public class MovieDetailActivity extends AppCompatActivity {
                 TrailerInfo reviewModel = response.body();
                 trailerResults = reviewModel.getResults();
 
-                final String id = trailerResults.get(0).getKey();
+                List<String> idList = new ArrayList<>();
 
-                playTrailerImageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        launchTrailer(id);
-                    }
-                });
+                for(int i = 0; i < trailerResults.size(); i++) {
+                    idList.add(trailerResults.get(i).getKey());
+                }
+
+                mTrailerAdapter = new TrailerAdapter(idList, MovieDetailActivity.this);
+
+                mTrailerRv.setAdapter(mTrailerAdapter);
+                mTrailerRv.setLayoutManager(new LinearLayoutManager(MovieDetailActivity.this));
+
             }
 
             @Override
@@ -263,9 +269,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private void launchTrailer(String trailerID) {
+    private void launchTrailer(String trailerUrl) {
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailerID));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + trailerUrl));
 
         try {
             MovieDetailActivity.this.startActivity(intent);
@@ -319,5 +325,10 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    @Override
+    public void onTrailerItemClick(String trailerUrl) {
+        launchTrailer(trailerUrl);
     }
 }

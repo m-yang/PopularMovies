@@ -34,14 +34,6 @@
                     android:layout_height="278dp"
                     android:contentDescription="@string/movie_poster_content_description" />
 
-                <ImageView
-                    android:id="@+id/play_trailer_iv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/play_circle_96dp" />
-
-
             </RelativeLayout>
 
             <TextView
@@ -113,6 +105,15 @@
                 app:layout_constraintStart_toEndOf="@+id/poster_rl"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/btn_star" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/trailer_rv"
+                android:layout_width="85dp"
+                android:layout_height="278dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toStartOf="@+id/poster_rl"
+                app:layout_constraintTop_toTopOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 
