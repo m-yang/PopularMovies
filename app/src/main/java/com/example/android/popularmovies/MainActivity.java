@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.example.android.popularmovies.data.FavoriteMovieContract;
-import com.example.android.popularmovies.data.FavoriteMovieDbHelper;
 import com.example.android.popularmovies.model.MovieInfo;
 import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.rest.MovieDbEndpoint;
@@ -46,8 +44,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     private static final int SORT_TOP_RATED = 1;
     private static final int SORT_FAVORITES = 2;
 
-    private SQLiteDatabase mDb;
-
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
 
@@ -59,14 +55,17 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FavoriteMovieDbHelper dbHelper = new FavoriteMovieDbHelper(this);
-
-        mDb = dbHelper.getWritableDatabase();
-
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
         mPosterGrid.setLayoutManager(gridLayoutManager);
 
         displayMovies(SORT_POPULAR);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     private int numColumns() {

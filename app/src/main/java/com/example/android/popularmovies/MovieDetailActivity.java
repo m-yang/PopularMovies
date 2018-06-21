@@ -3,7 +3,6 @@ package com.example.android.popularmovies;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.data.FavoriteMovieContract;
-import com.example.android.popularmovies.data.FavoriteMovieDbHelper;
 import com.example.android.popularmovies.model.Result;
 import com.example.android.popularmovies.model.ReviewInfo;
 import com.example.android.popularmovies.model.ReviewResult;
@@ -75,8 +73,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
     boolean starred = false;
 
-    private SQLiteDatabase mDb;
-
     Retrofit mRetrofit;
 
     List<ReviewResult> reviewResults;
@@ -93,10 +89,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         setContentView(R.layout.activity_movie_detail);
         ButterKnife.bind(this);
 
-        FavoriteMovieDbHelper dbHelper = new FavoriteMovieDbHelper(this);
-
-        mDb = dbHelper.getWritableDatabase();
-
         Bundle bundle = getIntent().getExtras();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -104,7 +96,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         if (bundle != null) {
             movieResult = bundle.getParcelable(MOVIE_RESULT_PARCELABLE_KEY);
         }
-
 
         mRetrofit = RetrofitClient.getInstance(BASE_URL);
 
@@ -157,8 +148,6 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
         cv.put(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT, movieResultJson);
 
         Uri uri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI, cv);
-
-        Log.d(TAG, "uri: " + uri.toString());
 
         printDb();
     }
