@@ -156,9 +156,9 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
 
         cv.put(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT, movieResultJson);
 
-        long id = mDb.insert(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME, null, cv);
+        Uri uri = getContentResolver().insert(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI, cv);
 
-        Log.d(TAG, id + "");
+        Log.d(TAG, "uri: " + uri.toString());
 
         printDb();
     }
@@ -175,9 +175,10 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
             Result result = new Gson().fromJson(json, Result.class);
 
             if (result.getId() == movieId) {
-                numRemoved += mDb.delete(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
-                        FavoriteMovieContract.FavoriteMovieEntry._ID + "=" + _id,
-                        null);
+
+                Uri uri = FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI;
+                uri = uri.buildUpon().appendPath(_id).build();
+                numRemoved += getContentResolver().delete(uri, null, null);
 
             }
         }
@@ -298,13 +299,12 @@ public class MovieDetailActivity extends AppCompatActivity implements TrailerAda
     }
 
     private Cursor queryDb() {
-        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null, null);
 
+        Cursor cursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
         return cursor;
 
     }

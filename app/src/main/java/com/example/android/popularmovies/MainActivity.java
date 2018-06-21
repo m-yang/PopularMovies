@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
     private SQLiteDatabase mDb;
 
-
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
 
@@ -84,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
 
     private void displayMovies(long rowId) {
-        
+
         Retrofit mRetrofit = RetrofitClient.getInstance(BASE_URL);
 
         MovieDbEndpoint client = mRetrofit.create(MovieDbEndpoint.class);
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         String apiKey = getResources().getString(R.string.MOVIE_DB_API_KEY);
 
         if (rowId == SORT_POPULAR) {
-            call = client.getMovies(getResources().getString(R.string.sort_popular),apiKey);
+            call = client.getMovies(getResources().getString(R.string.sort_popular), apiKey);
         } else if (rowId == SORT_TOP_RATED) {
             call = client.getMovies(getResources().getString(R.string.sort_top_rated), apiKey);
         } else if (rowId == SORT_FAVORITES) {
@@ -181,13 +180,12 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     }
 
     private Cursor queryDb() {
-        Cursor cursor = mDb.query(FavoriteMovieContract.FavoriteMovieEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null, null);
 
+        Cursor cursor = getContentResolver().query(FavoriteMovieContract.FavoriteMovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
         return cursor;
 
     }
