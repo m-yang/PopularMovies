@@ -44,6 +44,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     private static final int SORT_TOP_RATED = 1;
     private static final int SORT_FAVORITES = 2;
 
+    private static String KEY_INSTANCE_STATE = "key-instance-state";
+
+    ArrayList<Result> resultList;
+
     @BindView(R.id.movies_rv)
     public RecyclerView mPosterGrid;
 
@@ -55,17 +59,40 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
-        mPosterGrid.setLayoutManager(gridLayoutManager);
+        if (savedInstanceState != null) {
 
-        displayMovies(SORT_POPULAR);
+            resultList = savedInstanceState.getParcelableArrayList(KEY_INSTANCE_STATE);
+
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
+            mPosterGrid.setLayoutManager(gridLayoutManager);
+
+            mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
+            mPosterGrid.setAdapter(mAdapter);
+        } else {
+
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
+            mPosterGrid.setLayoutManager(gridLayoutManager);
+            displayMovies(SORT_POPULAR);
+        }
+
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        finish();
-        startActivity(getIntent());
+
+        if(resultList.isEmpty()) {
+            displayMovies(SORT_FAVORITES);
+        }
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelableArrayList(KEY_INSTANCE_STATE, resultList);
     }
 
     private int numColumns() {
@@ -121,9 +148,9 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
                 MovieInfo movieModel = response.body();
 
-                List<Result> results = Objects.requireNonNull(movieModel).getResults();
+                resultList = new ArrayList<>(movieModel.getResults());
 
-                mAdapter = new MoviePosterAdapter(results, MainActivity.this);
+                mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
                 mPosterGrid.setAdapter(mAdapter);
             }
 
