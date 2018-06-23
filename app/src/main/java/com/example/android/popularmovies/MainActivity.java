@@ -24,7 +24,6 @@ import com.example.android.popularmovies.rest.MovieDbEndpoint;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        
+
         if (savedInstanceState != null) {
 
             restoreState = true;
@@ -146,20 +145,21 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         } else if (rowId == SORT_TOP_RATED) {
             call = client.getMovies(getResources().getString(R.string.sort_top_rated), apiKey);
         } else if (rowId == SORT_FAVORITES) {
+            Log.d(TAG, "sort fav");
 
             Cursor cursor = queryDb();
 
-            List<Result> results = new ArrayList<Result>();
+            resultList = new ArrayList<>();
 
             while (cursor.moveToNext()) {
                 String json = cursor.getString(cursor.getColumnIndexOrThrow(FavoriteMovieContract.FavoriteMovieEntry.MOVIE_RESULT));
 
                 Result result = new Gson().fromJson(json, Result.class);
 
-                results.add(result);
+                resultList.add(result);
             }
 
-            mAdapter = new MoviePosterAdapter(results, MainActivity.this);
+            mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
             mPosterGrid.setAdapter(mAdapter);
             return;
         }
