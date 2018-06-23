@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     private static String KEY_INSTANCE_STATE = "key-instance-state";
     private static String KEY_SCROLL_STATE = "key-scroll-state";
 
+    private static long rowId = 0;
+
+    private static boolean restoreState = false;
+
     ArrayList<Result> resultList;
 
     @BindView(R.id.movies_rv)
@@ -61,9 +65,13 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
+        
         if (savedInstanceState != null) {
+
+            restoreState = true;
             Parcelable state = savedInstanceState.getParcelable(KEY_SCROLL_STATE);
+
+            resultList = savedInstanceState.getParcelableArrayList(KEY_INSTANCE_STATE);
 
             gridLayoutManager = new GridLayoutManager(this, numColumns());
             gridLayoutManager.onRestoreInstanceState(state);
@@ -73,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
             gridLayoutManager = new GridLayoutManager(this, numColumns());
             mPosterGrid.setLayoutManager(gridLayoutManager);
-            displayMovies(SORT_POPULAR);
+            displayMovies();
         }
 
     }
@@ -82,8 +90,8 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     protected void onRestart() {
         super.onRestart();
 
-        if (resultList.isEmpty()) {
-            displayMovies(SORT_FAVORITES);
+        if (resultList == null) {
+            displayMovies();
         }
     }
 
@@ -95,6 +103,17 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
         outState.putParcelableArrayList(KEY_INSTANCE_STATE, resultList);
         outState.putParcelable(KEY_SCROLL_STATE, mPosterGrid.getLayoutManager().onSaveInstanceState());
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(rowId == SORT_FAVORITES) {
+            displayMovies();
+        }
 
     }
 
@@ -111,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     }
 
 
-    private void displayMovies(long rowId) {
+    private void displayMovies() {
 
         Retrofit mRetrofit = RetrofitClient.getInstance(BASE_URL);
 
@@ -160,6 +179,10 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
             @Override
             public void onFailure(@NonNull Call<MovieInfo> call, @NonNull Throwable t) {
                 Log.d(TAG, "failure");
+
+                resultList = new ArrayList<Result>();
+                mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
+                mPosterGrid.setAdapter(mAdapter);
             }
         });
     }
@@ -179,11 +202,24 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
 
         spinner.setAdapter(spinnerAdapter);
 
+        spinner.setSelection((int) rowId);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long rowId) {
-                displayMovies(rowId);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long id) {
+                rowId = id;
+
+                if(restoreState) {
+                    if(resultList != null) {
+                        mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
+                        mPosterGrid.setAdapter(mAdapter);
+                    }
+                    restoreState = false;
+                } else {
+                    displayMovies();
+                }
+
             }
 
             @Override
