@@ -3,6 +3,7 @@ package com.example.android.popularmovies;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     private static final int SORT_FAVORITES = 2;
 
     private static String KEY_INSTANCE_STATE = "key-instance-state";
+    private static String KEY_SCROLL_STATE = "key-scroll-state";
 
     ArrayList<Result> resultList;
 
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     public RecyclerView mPosterGrid;
 
     public MoviePosterAdapter mAdapter;
+    GridLayoutManager gridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,17 +63,15 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         ButterKnife.bind(this);
 
         if (savedInstanceState != null) {
+            Parcelable state = savedInstanceState.getParcelable(KEY_SCROLL_STATE);
 
-            resultList = savedInstanceState.getParcelableArrayList(KEY_INSTANCE_STATE);
+            gridLayoutManager = new GridLayoutManager(this, numColumns());
+            gridLayoutManager.onRestoreInstanceState(state);
 
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
             mPosterGrid.setLayoutManager(gridLayoutManager);
-
-            mAdapter = new MoviePosterAdapter(resultList, MainActivity.this);
-            mPosterGrid.setAdapter(mAdapter);
         } else {
 
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(this, numColumns());
+            gridLayoutManager = new GridLayoutManager(this, numColumns());
             mPosterGrid.setLayoutManager(gridLayoutManager);
             displayMovies(SORT_POPULAR);
         }
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
     protected void onRestart() {
         super.onRestart();
 
-        if(resultList.isEmpty()) {
+        if (resultList.isEmpty()) {
             displayMovies(SORT_FAVORITES);
         }
     }
@@ -93,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements MoviePosterAdapte
         super.onSaveInstanceState(outState);
 
         outState.putParcelableArrayList(KEY_INSTANCE_STATE, resultList);
+        outState.putParcelable(KEY_SCROLL_STATE, mPosterGrid.getLayoutManager().onSaveInstanceState());
+
     }
 
     private int numColumns() {
